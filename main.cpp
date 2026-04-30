@@ -7,6 +7,8 @@
 #include <string>
 #include <ctime>
 #include <fstream>
+#include <vector>
+
 using namespace std;
   
     class Colaborador
@@ -69,15 +71,15 @@ using namespace std;
              
             void editColaborador()
             {
-                //desenvolver
+                return;
             }          
              
             void deleteColaborador()
             {
-                //desenvolver
+                return;
             }
             
-            int getID() const // const garante que o ID nao sera alterado por outras classes
+            int getID() const // const no final garante que o ID nao sera alterado por outras classes
             {
                 return id;
             }
@@ -113,22 +115,22 @@ using namespace std;
             
            void enviaFinanceiro()
             {
-                //desenvolver
+                return;
             }
              
             void recebeFinanceiro()
             {
-                //desenvolver
+                return;
             }
                        
             float calculaBruto(Colaborador& colaboradorA) //Acesso indireto via método público
             {
-                //desenvolver
+                //return;
             }
                   
             float calculaLiquido()
             {
-                //desenvolver
+                //return;
             }
     };
 
@@ -137,24 +139,45 @@ using namespace std;
     {
         public:
 
-            salvarArquivo() // salva em arquivo txt/csv - implementar para a primeira avaliacao
+            // salva em arquivo txt/csv - implementar para a primeira avaliacao
+            void salvarArquivo(const vector <Colaborador>& colaboradores) // acessa as informacoes de um vetor de objetos do tipo Colaborador
             {
-                //desenvolver
+                ofstream arquivo("ColaboradoresRH.csv");
+
+                if (arquivo.is_open()) 
+                {
+                    arquivo << "ID;Nome;Cargo;CPF" << endl; //cabecalho do arquivo
+
+                    for (int i = 0; i < colaboradores.size(); i++) 
+                    {
+                        arquivo << colaboradores[i].getID() << ";";
+                        arquivo << colaboradores[i].getNome() << ";";
+                        arquivo << colaboradores[i].getCargo() << ";";
+                        arquivo << fixed << colaboradores[i].getCPF() << endl;
+                        }
+                    arquivo.close();    
+                    cout << "Dados salvos com sucesso!\n";
+                } 
+
+                else 
+                {
+                    cout << "Erro ao criar o arquivo!\n";
+                }
+}
+
+            void carregarArquivo() // pega informacoes em arquivo txt/csv - implementar para a primeira avaliacao
+            {
+                return;
             }
 
-            carregarArquivo() // pega informacoes em arquivo txt/csv - implementar para a primeira avaliacao
+            void salvarBanco() // segunda avaliacao
             {
-                //desenvolver
+                return;
             }
 
-            salvarBanco() // segunda avaliacao
+            void carregarBanco() // segunda avaliacao
             {
-                //desenvolver
-            }
-
-            carregarBanco() // segunda avaliacao
-            {
-                //desenvolver
+                return;
             }
 
     
@@ -164,8 +187,9 @@ using namespace std;
 int main() {
    
     int menu_aux = 0, addColaborador_aux = 0; 
-    FolhaPagamento folhas_pagamento[10]; // vetor de objetos do tipo FolhaPagamento
-    Colaborador colaboradores[10]; // vetor de objetos do tipo Colaborador
+    vector <FolhaPagamento> folhas_pagamento; // vetor de objetos do tipo FolhaPagamento
+    vector <Colaborador> colaboradores; // vetor de objetos do tipo Colaborador
+    BancoDados_RH arquivo;
 
     // Menu de opcoes para o usuario
     do {
@@ -178,14 +202,17 @@ int main() {
     switch (menu_aux)
     {
         case 1:
-
-        cout << "Digite o numero de colaboradores que voce quer cadastrar: " << endl;
-        cin >> addColaborador_aux;
-
-        for(int i = 0; i < addColaborador_aux; i++){
-            colaboradores[i].addColaborador();
-        }
+            cout << "Digite o numero de colaboradores que voce quer cadastrar: " << endl;
+            cin >> addColaborador_aux;
+            for(int i = 0; i < addColaborador_aux; i++)
+            {
+            Colaborador novo;       // Cria um novo objeto na memória
+            novo.addColaborador();  // Chama o método para preencher os dados
+            colaboradores.push_back(novo); // Adiciona o objeto preenchido ao vetor
+            }
         
+        arquivo.salvarArquivo(colaboradores);
+        system("explorer ."); // abre o arquivo ao ser criado
         break;
 
         case 2:
