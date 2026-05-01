@@ -19,7 +19,7 @@ using namespace std;
             int id;
             string nome;
             string cargo;
-            double cpf;
+            string cpf;
             //foto - definir como fazer;            
             string sexo;
             struct tm data_admissao; // struct padrao da biblioteca ctime
@@ -32,7 +32,7 @@ using namespace std;
                 this->id = ++contador_ID; // atribui id e soma 1 ao contador (id sequencial do sistema)
                 this->nome = "Nao preenchido";
                 this->cargo = "Nao preenchido";
-                this->cpf = 0;
+                this->cpf = "00000000000";
                 this->sexo = "Nao preenchido";
                 struct tm data_admissao = {0};
                 struct tm data_desligamento = {0};
@@ -40,9 +40,8 @@ using namespace std;
             
             void addColaborador()
             {
-                string nome_Temp, cargo_Temp, sexo_Temp; // variaveis temporarias para guardar entradas do usuario
-                double cpf_Temp; // variavel temporaria para guardar entradas do usuario
-                
+                string nome_Temp, cargo_Temp, sexo_Temp, cpf_Temp; // variaveis temporarias para guardar entradas do usuario
+               
                 // Lógica para obter a data atual e salvar no membro data de admissao
                 time_t tempoBruto = time(0); // Pega o tempo agora
                 struct tm* dataAtual = localtime(&tempoBruto); // Converte para struct tm
@@ -94,9 +93,14 @@ using namespace std;
                 return cargo;
             }
 
-            double getCPF() const
+            string getCPF() const
             {
                 return cpf;
+            }
+
+            string getSexo() const
+            {
+                return sexo;
             }
     };
 
@@ -125,12 +129,12 @@ using namespace std;
                        
             float calculaBruto(Colaborador& colaboradorA) //Acesso indireto via método público
             {
-                //return;
+                return 0;
             }
                   
             float calculaLiquido()
             {
-                //return;
+                return 0;
             }
     };
 
@@ -139,35 +143,46 @@ using namespace std;
     {
         public:
 
-            // salva em arquivo txt/csv - implementar para a primeira avaliacao
+            // salva em arquivo txt/csv
             void salvarArquivo(const vector <Colaborador>& colaboradores) // acessa as informacoes de um vetor de objetos do tipo Colaborador
             {
-                ofstream arquivo("ColaboradoresRH.csv");
+                ofstream arquivo; // cria um objeto ofstream
+                arquivo.open("ColaboradoresRH.csv"); // abre um arquivo e cria ele caso nao exista
 
-                if (arquivo.is_open()) 
+                if (arquivo.is_open()) // confere se o arquivo esta aberto
                 {
-                    arquivo << "ID;Nome;Cargo;CPF" << endl; //cabecalho do arquivo
+                    arquivo << "ID;Nome;Cargo;CPF;Sexo" << endl; // cabecalho do arquivo
 
-                    for (int i = 0; i < colaboradores.size(); i++) 
+                    for (int i = 0; i < colaboradores.size(); i++) // loop roda o mesmo numero de vezes que o numero de colaboradores que podem ser cadastrados no vetor
                     {
                         arquivo << colaboradores[i].getID() << ";";
                         arquivo << colaboradores[i].getNome() << ";";
                         arquivo << colaboradores[i].getCargo() << ";";
-                        arquivo << fixed << colaboradores[i].getCPF() << endl;
+                        arquivo << colaboradores[i].getCPF() << ";";
+                        arquivo << colaboradores[i].getSexo() << endl;
+
                         }
                     arquivo.close();    
                     cout << "Dados salvos com sucesso!\n";
                 } 
 
-                else 
+                else // caso o arquivo nao esteja aberto
                 {
-                    cout << "Erro ao criar o arquivo!\n";
+                    cout << "Erro ao abrir o arquivo!\n";
                 }
 }
 
-            void carregarArquivo() // pega informacoes em arquivo txt/csv - implementar para a primeira avaliacao
+            void carregarArquivo(vector <Colaborador>& colaboradores) // pega informacoes em arquivo txt/csv TERMINAR DE DESENVOLVER
             {
-                return;
+                ifstream arquivo("ColaboradoresRH.csv"); // ifstream le dados no arquivo
+                arquivo.open("ColaboradoresRH.csv"); // abre um arquivo e cria ele caso nao exista
+
+                if (arquivo.is_open()) // confere se o arquivo esta aberto
+                {
+                    string linha; // variavel auxiliar para salvar as linhas lidas do arquivo
+                    getline(arquivo, linha, ';'); // le a linha ate encontrar ; e salva na variavel auxiliar
+                    cout << linha;                          
+                }
             }
 
             void salvarBanco() // segunda avaliacao
@@ -179,8 +194,6 @@ using namespace std;
             {
                 return;
             }
-
-    
     };
 
 
@@ -202,17 +215,17 @@ int main() {
     switch (menu_aux)
     {
         case 1:
+            //arquivo.carregarArquivo(colaboradores);
             cout << "Digite o numero de colaboradores que voce quer cadastrar: " << endl;
             cin >> addColaborador_aux;
             for(int i = 0; i < addColaborador_aux; i++)
             {
-            Colaborador novo;       // Cria um novo objeto na memória
-            novo.addColaborador();  // Chama o método para preencher os dados
+            Colaborador novo; // Cria um novo objeto na memória
+            novo.addColaborador(); // Chama o método para preencher os dados
             colaboradores.push_back(novo); // Adiciona o objeto preenchido ao vetor
             }
         
         arquivo.salvarArquivo(colaboradores);
-        system("explorer ."); // abre o arquivo ao ser criado
         break;
 
         case 2:
