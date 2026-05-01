@@ -8,6 +8,8 @@
 #include <ctime>
 #include <fstream>
 #include <vector>
+#include <cctype>
+#include <algorithm>
 
 using namespace std;
   
@@ -35,7 +37,20 @@ using namespace std;
                 this->cpf = "00000000000";
                 this->sexo = "Nao preenchido";
                 struct tm data_admissao = {0};
-                struct tm data_desligamento = {0};
+                struct tm data_desligamento = {0}; // logica da data de desligamento deve entrar no metodo deleteColaborador
+            }
+
+            Colaborador(int id_arquivo, string nome_arq, string cargo_arq, string cpf_arq, string sexo_arq) // metodo contrutor para pegar dados de arquivo
+            {
+                this->id = id_arquivo;
+                this->nome = nome_arq;
+                this->cargo = cargo_arq;
+                this->cpf = cpf_arq;
+                this->sexo = sexo_arq;
+
+                if (id_arquivo > contador_ID) {
+                contador_ID = id_arquivo;
+                }
             }
             
             void addColaborador()
@@ -53,10 +68,15 @@ using namespace std;
                 cout << "=====Cadastro de novo colaborador=====" << endl;
                 cout << "Digite o Nome: ";
                 getline(cin >> ws, nome_Temp); // 'ws' limpa o buffer para aceitar espaços
-                cout << "Digite o CPF: ";
+                cout << "Digite o CPF (apenas numeros): ";
                 cin >> cpf_Temp;
-                cout << "Digite o Sexo: ";
+                cout << "Digite o Sexo (M/F): ";
                 cin >> sexo_Temp;
+                while(sexo_Temp != "m" && sexo_Temp != "M" && sexo_Temp != "f" && sexo_Temp != "F"){
+                    cout << "Informacao invalida! Digite M ou F novamente.\n";
+                    cin >> sexo_Temp;
+                }
+                transform(sexo_Temp.begin(), sexo_Temp.end(), sexo_Temp.begin(), ::toupper);
                 cout << "Digite o Cargo: ";
                 getline(cin >> ws, cargo_Temp); // 'ws' limpa o buffer para aceitar espaços
               
@@ -146,9 +166,7 @@ using namespace std;
             // salva em arquivo txt/csv
             void salvarArquivo(const vector <Colaborador>& colaboradores) // acessa as informacoes de um vetor de objetos do tipo Colaborador
             {
-                ofstream arquivo; // cria um objeto ofstream
-                arquivo.open("ColaboradoresRH.csv"); // abre um arquivo e cria ele caso nao exista
-
+                ofstream arquivo("ColaboradoresRH.csv"); // ofstream escreve dados no arquivo
                 if (arquivo.is_open()) // confere se o arquivo esta aberto
                 {
                     arquivo << "ID;Nome;Cargo;CPF;Sexo" << endl; // cabecalho do arquivo
@@ -175,15 +193,34 @@ using namespace std;
             void carregarArquivo(vector <Colaborador>& colaboradores) // pega informacoes em arquivo txt/csv TERMINAR DE DESENVOLVER
             {
                 ifstream arquivo("ColaboradoresRH.csv"); // ifstream le dados no arquivo
-                arquivo.open("ColaboradoresRH.csv"); // abre um arquivo e cria ele caso nao exista
-
                 if (arquivo.is_open()) // confere se o arquivo esta aberto
                 {
                     string linha; // variavel auxiliar para salvar as linhas lidas do arquivo
-                    getline(arquivo, linha, ';'); // le a linha ate encontrar ; e salva na variavel auxiliar
-                    cout << linha;                          
+                    getline (arquivo, linha); // copia a primeira linha de cabecalho (eliminar)
+
+                    while (getline(arquivo, linha)) {
+                        string dados_colab[5]; // Vetor temporário para guardar os pedaços da linha
+                        size_t pos = 0;
+
+                        for (int i = 0; i < 4; i++) { // Faz o corte para as 4 primeiras posicoes do vetor
+                            pos = linha.find(";");
+                            dados_colab[i] = linha.substr(0, pos); // cria uma substring ate o ; e copia para o vetor auxiliar
+                            linha.erase(0, pos + 1); // apagar o que ja foi extraido
+                        }
+                    
+                    dados_colab[4] = linha; // O que sobrou na linha é o último dado (Sexo)
+
+                    int id_aux = stoi(dados_colab[0]); // converter o ID de string para int
+                    Colaborador colab_aux(id_aux, dados_colab[1], dados_colab[2], dados_colab[3], dados_colab[4]);
+                    colaboradores.push_back(colab_aux); // atribui os dados de colab_aux para o vetor colaboradores
+                    }
+                    arquivo.close();
+                    cout << "Dados carregados com sucesso!\n";
                 }
-            }
+                else {
+                    cout << "Erro ao abrir o arquivo\n";
+                }
+}
 
             void salvarBanco() // segunda avaliacao
             {
@@ -200,9 +237,11 @@ using namespace std;
 int main() {
    
     int menu_aux = 0, addColaborador_aux = 0; 
+    string linha;
     vector <FolhaPagamento> folhas_pagamento; // vetor de objetos do tipo FolhaPagamento
     vector <Colaborador> colaboradores; // vetor de objetos do tipo Colaborador
     BancoDados_RH arquivo;
+    arquivo.carregarArquivo(colaboradores); // puxa os dados de colaboradores cadastrados anteriormente no arquivo
 
     // Menu de opcoes para o usuario
     do {
@@ -212,20 +251,39 @@ int main() {
     cout << "5. Buscar por colaborador(es)" << endl << "6. Listar horas trabalhadas" << endl << "7. Sair" << endl;
     cin >> menu_aux;
 
+    // TESTE DO carregarArquivo - apagar no final
+    //arquivo.carregarArquivo(colaboradores);
+
+    //for(int j = 0; j < colaboradores.size(); j++){
+    //    cout << colaboradores[j].getID() << "\n";
+    //    cout << colaboradores[j].getNome() << "\n";
+    //    cout << colaboradores[j].getCargo() << "\n";
+    //    cout << colaboradores[j].getCPF() << "\n";
+    //    cout << colaboradores[j].getSexo() << "\n";
+    //}
+
+    //if(colaboradores.empty())
+    //{
+    //    cout << "Nenhum colaborador cadastrado no arquivo!\n";
+    //}
+
+
     switch (menu_aux)
     {
         case 1:
-            //arquivo.carregarArquivo(colaboradores);
+            
             cout << "Digite o numero de colaboradores que voce quer cadastrar: " << endl;
             cin >> addColaborador_aux;
+            
             for(int i = 0; i < addColaborador_aux; i++)
             {
-            Colaborador novo; // Cria um novo objeto na memória
-            novo.addColaborador(); // Chama o método para preencher os dados
-            colaboradores.push_back(novo); // Adiciona o objeto preenchido ao vetor
+                Colaborador novo; // Cria um novo objeto na memória
+                novo.addColaborador(); // Chama o método para preencher os dados
+                colaboradores.push_back(novo); // Adiciona o objeto preenchido ao vetor
             }
         
-        arquivo.salvarArquivo(colaboradores);
+            arquivo.salvarArquivo(colaboradores);
+
         break;
 
         case 2:
@@ -237,7 +295,23 @@ int main() {
         break;      
         
         case 4:
-            // desenvolver
+
+            cout << "\n\n";
+            for(int j = 0; j < colaboradores.size(); j++)
+            {
+                cout << colaboradores[j].getID() << " || ";
+                cout << colaboradores[j].getNome() << " || ";
+                cout << colaboradores[j].getCargo() << " || ";
+                cout << colaboradores[j].getCPF() << " || ";
+                cout << colaboradores[j].getSexo() << "\n";
+            }
+            cout << "\n\n";
+
+            if(colaboradores.empty())
+            {
+                cout << "Nenhum colaborador cadastrado no arquivo!\n";
+            }
+
         break;
 
         case 5:
