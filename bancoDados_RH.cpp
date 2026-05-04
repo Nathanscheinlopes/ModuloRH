@@ -26,7 +26,7 @@ void BancoDados_RH::exportarPlanilha(const vector <Colaborador>& colaboradores) 
     }
 }
 
-void BancoDados_RH::carregarPlanilha(vector <Colaborador>& colaboradores, vector <Cargo>& listaCargos) // pega informacoes em arquivo csv 
+void BancoDados_RH::carregarPlanilha(vector <Colaborador>& colaboradores, const vector <Cargo>& listaCargos) // pega informacoes em arquivo csv 
 {
     ifstream arquivo("ColaboradoresRH.csv"); // ifstream le dados no arquivo
     if (arquivo.is_open()) // confere se o arquivo esta aberto

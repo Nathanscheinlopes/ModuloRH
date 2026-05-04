@@ -29,7 +29,7 @@ class Colaborador
 
         float getSalarioBase() const;
         
-        void addColaborador(vector <Cargo>& listaCargos);
+        void addColaborador(const vector <Cargo>& listaCargos);
             
         void editColaborador();
             

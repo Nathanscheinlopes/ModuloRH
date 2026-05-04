@@ -36,7 +36,7 @@ float Colaborador::getSalarioBase() const
     return objetoCargo.getSalario();                
 }
 
-void Colaborador::addColaborador(vector <Cargo>& listaCargos)
+void Colaborador::addColaborador(const vector <Cargo>& listaCargos)
 {
     string nome_Temp, sexo_Temp, cpf_Temp; // variaveis temporarias para guardar entradas do usuario
     int cargo_aux;

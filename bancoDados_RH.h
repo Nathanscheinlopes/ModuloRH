@@ -12,7 +12,7 @@ class BancoDados_RH
         // salva em arquivo csv
         void exportarPlanilha(const vector <Colaborador>& colaboradores); // acessa as informacoes de um vetor de objetos do tipo Colaborador
 
-        void carregarPlanilha(vector <Colaborador>& colaboradores, vector <Cargo>& listaCargos); // pega informacoes em arquivo csv 
+        void carregarPlanilha(vector <Colaborador>& colaboradores, const vector <Cargo>& listaCargos); // pega informacoes em arquivo csv 
 
         void salvarBanco(); // metodo a ser desenvolvido na segunda avaliacao
 

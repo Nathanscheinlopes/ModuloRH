@@ -13,16 +13,18 @@ using namespace std;
 int main() {
    
     int menu_aux = 0, addColaborador_aux = 0; 
-    vector <FolhaPagamento> folhas_pagamento; // vetor de objetos do tipo FolhaPagamento
     vector <Colaborador> colaboradores; // vetor de objetos do tipo Colaborador
     vector <Cargo> listaCargos; // vetor para armazenar cargos do arquivo csv
     Cargo cargos_aux; // objeto do tipo cargo para acessar os metodos desta classe
     BancoDados_RH arquivo; // objeto do tipo BancoDados_RH para acessar os metodos desta classe
+    FolhaPagamento folha_pag; // objeto do tipo FolhaPagamento para acessar os metodos desta classe
 
     cargos_aux.extrairCargosPlanilha(listaCargos);
     arquivo.carregarPlanilha(colaboradores, listaCargos); // puxa os dados de colaboradores cadastrados anteriormente no arquivo
     // Menu de opcoes para o usuario
     do {
+    
+    cout << "\n";
     cout << "Bem-vindo ao sistema de Recursos Humanos!" << endl;
     cout << "Digite a operacao que deseja realizar:" << endl;
     cout << "1. Cadastrar colaborador" << endl << "2. Editar colaborador cadastrado" << endl << "3. Excluir colaborador" << endl << "4. Listar colaborador(es)" << endl;
@@ -86,7 +88,9 @@ int main() {
         break;
 
         case 7:
-            //desenvolver
+
+            folha_pag.gerarFolhaPagamento(colaboradores);
+
         break;
 
         case 8:

@@ -18,9 +18,11 @@ class FolhaPagamento
             
         void recebeFinanceiro(); // receber impostos do financeiro - avaliar desenvolvimento na segunda etapa
                     
-        float calculaBruto(Colaborador& colaboradorA); // Acesso indireto via metodo publico
+        float calculaBruto(const Colaborador& colaboradorA); // Acesso indireto via metodo publico
                 
-        float calculaLiquido(Colaborador& colaboradorA); // Acesso indireto via metodo publico
+        float calculaLiquido(const Colaborador& colaboradorA); // Acesso indireto via metodo publico
+
+        void gerarFolhaPagamento(const vector <Colaborador>& colaboradores); // Acesso indireto via metodo publico
 
 }; // fim da classe
 
