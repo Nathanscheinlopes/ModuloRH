@@ -12,7 +12,7 @@ using namespace std;
 
 int main() {
    
-    int menu_aux = 0, addColaborador_aux = 0; 
+    int menu_aux = 0, addColaborador_aux = 0, editColaborador_aux = 0; // variaveis auxiliares para o menu de opcoes
     vector <Colaborador> colaboradores; // vetor de objetos do tipo Colaborador
     vector <Cargo> listaCargos; // vetor para armazenar cargos do arquivo csv
     Cargo cargos_aux; // objeto do tipo cargo para acessar os metodos desta classe
@@ -52,9 +52,22 @@ int main() {
         break;
 
         case 2:
-            // desenvolver
-        break;    
+            cout << "\n";
+            cout << "Digite o ID do colaborador que voce deseja editar: " << endl;
+            cin >> editColaborador_aux;
+            for(int i = 0; i < colaboradores.size(); i++)
+            {
+                if(colaboradores[i].getID() == editColaborador_aux)
+                {
+                    colaboradores[i].editColaborador();
+                    arquivo.exportarPlanilha(colaboradores);
+                    break; // Encerra o loop após encontrar e editar o colaborador
+                }
+            }
 
+
+        break;
+        
         case 3:
             // desenvolver
         break;      
