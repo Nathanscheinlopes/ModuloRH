@@ -34,7 +34,8 @@ class Colaborador {
         // CORREÇÃO 1: Garanta que esta linha apareça APENAS UMA VEZ
         static void deleteColaborador(std::vector<Colaborador>& lista, int idParaExcluir);
         static void buscarColaborador(const vector<Colaborador>& lista, string termoBusca);
-        
+        static void atualizarContador(const vector<Colaborador>& lista);  
+
         void setAtivo(bool estado) { ativo = estado; }
         bool isAtivo() const { return ativo; }
 

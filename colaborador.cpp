@@ -39,7 +39,7 @@ void Colaborador::addColaborador(const vector <Cargo>& listaCargos)
 {
     string nome_Temp, sexo_Temp, cpf_Temp; // variaveis temporarias para guardar entradas do usuario
     int cargo_aux;
-
+   
     // Lógica para obter a data atual e salvar no membro data de admissao
     time_t tempoBruto = time(0); // Pega o tempo agora
     struct tm* dataAtual = localtime(&tempoBruto); // Converte para struct tm
@@ -88,6 +88,16 @@ void Colaborador::addColaborador(const vector <Cargo>& listaCargos)
 void Colaborador::editColaborador() // DESENVOLVER!!
 { 
     return; 
+}
+
+void Colaborador::atualizarContador(const vector<Colaborador>& lista) {
+    int maior = 0;
+    for (const auto& c : lista) {
+        if (c.getID() > maior) {
+            maior = c.getID();
+        }
+    }
+    contador_ID = maior; // O próximo ID será maior + 1
 }
 
 void Colaborador::deleteColaborador(std::vector<Colaborador>& lista, int idParaExcluir) 

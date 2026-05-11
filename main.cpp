@@ -33,6 +33,8 @@ int main() {
     cout << "1. Cadastrar colaborador" << endl << "2. Editar colaborador cadastrado" << endl << "3. Excluir colaborador" << endl << "4. Listar colaborador(es)" << endl;
     cout << "5. Buscar por colaborador(es)" << endl << "6. Listar horas trabalhadas" << endl << "7. Gerar Folha de Pagamento" << endl << "8. Sair" << endl;
     cin >> menu_aux;
+    //arquivo.carregarPlanilha(colaboradores, listaCargos);
+    Colaborador::atualizarContador(colaboradores); // Ajusta o ID para não repetir
 
     switch (menu_aux)
     {
