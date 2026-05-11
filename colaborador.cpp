@@ -11,6 +11,7 @@ Colaborador::Colaborador() // metodo construtor - inicializa todos os membros da
     this->cpf = "00000000000";
     this->sexo = "Nao preenchido";
     this->ativo = false; // Inicialmente, o colaborador não está ativo
+    this->horasTrabalhadas = 0.0; // Inicialmente, o colaborador não trabalhou horas
     struct tm data_admissao = {0};
     struct tm data_desligamento = {0}; // logica da data de desligamento deve entrar no metodo deleteColaborador
 }

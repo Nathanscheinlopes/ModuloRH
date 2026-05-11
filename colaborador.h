@@ -18,7 +18,8 @@ class Colaborador {
         string sexo;
         struct tm data_admissao;
         struct tm data_desligamento;
-        bool ativo; // <-- CORREÇÃO 2: Adicione esta linha aqui!
+        bool ativo;
+        float horasTrabalhadas;
 
     public:
         Colaborador(); 
@@ -30,6 +31,9 @@ class Colaborador {
         float getSalarioBase() const;
         void addColaborador(const vector <Cargo>& listaCargos);
         void editColaborador();
+
+        void setHoras(float h){ this->horasTrabalhadas = h; }
+        float getHoras() const {return horasTrabalhadas; }
         
         // CORREÇÃO 1: Garanta que esta linha apareça APENAS UMA VEZ
         static void deleteColaborador(std::vector<Colaborador>& lista, int idParaExcluir);

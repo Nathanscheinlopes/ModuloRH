@@ -50,7 +50,7 @@ void BancoDados_RH::carregarPlanilha(vector <Colaborador>& colaboradores, const 
         while (getline(arquivo, linha)) {
             vector<string> dados_colab = separar(linha, ';'); // Sua função de split
 
-            // CORREÇÃO: Você precisa declarar e atribuir as variáveis antes de usar
+           
             int id_aux = stoi(dados_colab[0]);
             string nomeCargoArquivo = dados_colab[2]; 
             bool ativo_aux = (dados_colab[5] == "1"); // Supondo que 1 seja ativo

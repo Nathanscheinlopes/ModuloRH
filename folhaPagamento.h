@@ -24,7 +24,7 @@ class FolhaPagamento
                     
         float calculaBruto(const Colaborador& colaboradorA); // Acesso indireto via metodo publico
                 
-        float calculaLiquido(const Colaborador& colaboradorA); // Acesso indireto via metodo publico
+        float calculaLiquido(const Colaborador& colab, float horas); // Acesso indireto via metodo publico
 
         void gerarFolhaPagamento(const vector <Colaborador>& colaboradores); // Acesso indireto via metodo publico
 
