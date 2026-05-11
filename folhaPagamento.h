@@ -2,6 +2,10 @@
 #define FOLHAPAGAMENTO_H
 
 #include "colaborador.h"
+#include <string>
+#include <vector>
+#include <iostream> // Para usar cout/cin
+#include <ctime>    // Para usar struct tm e time_t
 
 class FolhaPagamento
 {

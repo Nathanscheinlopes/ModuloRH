@@ -1,47 +1,47 @@
-#ifndef COLABORADOR_H
-#define COLABORADOR_H
+#ifndef COLABORADOR_H  // Se o símbolo COLABORADOR_H não estiver definido...
+#define COLABORADOR_H  // Define ele agora.
+
+#include <string>
+#include <vector>
+#include <iostream> // Para usar cout/cin
+#include <ctime>    // Para usar struct tm e time_t
 
 #include "cargo.h"
-#include <ctime>
-#include <algorithm>
 
-class Colaborador
-{ 
+class Colaborador { 
     private:
-
         static int contador_ID;
         int id;
         string nome;
         Cargo objetoCargo;
         string cpf;
-        //foto - definir como fazer;            
         string sexo;
-        struct tm data_admissao; // struct padrao da biblioteca ctime
-        struct tm data_desligamento; // struct padrao da biblioteca ctime
+        struct tm data_admissao;
+        struct tm data_desligamento;
+        bool ativo; // <-- CORREÇÃO 2: Adicione esta linha aqui!
 
     public:
-
-        Colaborador(); // metodo construtor - inicializa todos os membros da classe Colaborador
-
-        Colaborador(int id_arquivo, string nome_arq, Cargo cargo_obj, string cpf_arq, string sexo_arq); // metodo contrutor para pegar dados de arquivo
+        Colaborador(); 
+        
+        // CORREÇÃO 3: Adicione "bool ativo_arq" ao final desta declaração
+        Colaborador(int id_arquivo, string nome_arq, Cargo cargo_obj, string cpf_arq, string sexo_arq, bool ativo_arq); 
 
         string getNomeCargo() const;
-
         float getSalarioBase() const;
-        
         void addColaborador(const vector <Cargo>& listaCargos);
-            
         void editColaborador();
-            
-        void deleteColaborador();
         
-        int getID() const; // const no final garante que o ID nao sera alterado por outras classes
+        // CORREÇÃO 1: Garanta que esta linha apareça APENAS UMA VEZ
+        static void deleteColaborador(std::vector<Colaborador>& lista, int idParaExcluir);
+        static void buscarColaborador(const vector<Colaborador>& lista, string termoBusca);
+        
+        void setAtivo(bool estado) { ativo = estado; }
+        bool isAtivo() const { return ativo; }
 
+        int getID() const; 
         string getNome() const;
-
         string getCPF() const;
-
         string getSexo() const;
 };
 
-#endif
+#endif // Fim do bloco de inclusão para COLABORADOR_H

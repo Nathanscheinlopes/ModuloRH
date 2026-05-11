@@ -1,4 +1,4 @@
-ID;Nome;Cargo;CPF;Sexo
-1;Matheus Ricciardi;Auxiliar de Padaria;82828822;M
-2;Nathan Lopes;Padeiro;29292929;M
-3;Joao Silva da Silva;Contador;282882828;M
+ID;Nome;Cargo;CPF;Sexo;Ativo
+1;Nat;Padeiro;123;M;0
+2;Mat;Confeiteiro;456;M;0
+1;Leo;Repositor;123;M;1

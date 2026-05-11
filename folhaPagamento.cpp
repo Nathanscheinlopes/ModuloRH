@@ -32,6 +32,7 @@ void FolhaPagamento::gerarFolhaPagamento(const vector <Colaborador>& colaborador
     if(colaboradores.size() == 0)
     {
         cout << "Nenhum colaborador cadastrado!\n";
+        return;
     }
 
     cout << "Digite o numero de folhas de pagamento que voce deseja gerar: ";

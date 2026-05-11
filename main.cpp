@@ -12,7 +12,10 @@ using namespace std;
 
 int main() {
    
-    int menu_aux = 0, addColaborador_aux = 0, editColaborador_aux = 0; // variaveis auxiliares para o menu de opcoes
+    int menu_aux = 0, addColaborador_aux = 0, editColaborador_aux = 0, deleteColaborador_aux = 0; // variaveis auxiliares para o menu de opcoes
+    int idAux = 0; // variavel auxiliar para receber o ID do colaborador a ser excluido  
+    bool existemAtivos = false; // Auxiliar para a mensagem de lista vazia
+    string termoBusca;
     vector <Colaborador> colaboradores; // vetor de objetos do tipo Colaborador
     vector <Cargo> listaCargos; // vetor para armazenar cargos do arquivo csv
     Cargo cargos_aux; // objeto do tipo cargo para acessar os metodos desta classe
@@ -56,31 +59,56 @@ int main() {
         break;
         
         case 3:
-            // desenvolver
+            
+            cout << "\n=====Excluir colaborador=====\n";
+            cout << "Digite o ID: ";
+            cin >> idAux;
+
+            // Chamada do método estático da classe
+            Colaborador::deleteColaborador(colaboradores, idAux);
+
+            // Atualiza o arquivo após a remoção
+            arquivo.exportarPlanilha(colaboradores);
+    
+
         break;      
         
         case 4:
-
             cout << "\n";
             cout << "=====Colaboradores cadastrados=====\n";
+
+            existemAtivos = false;
+
             for(int j = 0; j < colaboradores.size(); j++)
             {
-                cout << colaboradores[j].getID() << " || ";
-                cout << colaboradores[j].getNome() << " || ";
-                cout << colaboradores[j].getNomeCargo() << " || ";
-                cout << colaboradores[j].getCPF() << " || ";
-                cout << colaboradores[j].getSexo() << "\n";
+                // A mágica acontece aqui: só imprime se estiver ativo
+                if(colaboradores[j].isAtivo()) 
+                {
+                    cout << colaboradores[j].getID() << " || ";
+                    cout << colaboradores[j].getNome() << " || ";
+                    cout << colaboradores[j].getNomeCargo() << " || ";
+                    cout << colaboradores[j].getCPF() << " || ";
+                    cout << colaboradores[j].getSexo() << "\n";
+                    existemAtivos = true;
+                }
             }
-            if(colaboradores.empty())
+
+            // Se o vetor estiver fisicamente vazio OU se todos os itens estiverem inativos
+            if(!existemAtivos)
             {
-                cout << "Nenhum colaborador cadastrado!\n";
+                cout << "Nenhum colaborador ativo encontrado!\n";
             }
             cout << "\n";
-
         break;
 
         case 5:
-            // desenvolver
+            cout << "\n=====Buscar colaborador=====\n";
+            cout << "Digite o nome, ID ou CPF do colaborador que deseja buscar: ";
+            cin >> ws; // limpa buffer
+            getline(cin, termoBusca);
+
+            Colaborador::buscarColaborador(colaboradores, termoBusca);       
+                
         break;
 
         case 6:
