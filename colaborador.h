@@ -35,6 +35,8 @@ class Colaborador {
         static void deleteColaborador(std::vector<Colaborador>& lista, int idParaExcluir);
         static void buscarColaborador(const vector<Colaborador>& lista, string termoBusca);
         static void atualizarContador(const vector<Colaborador>& lista);  
+        void editColaborador(std::vector<Colaborador>& lista, const std::vector<Cargo>& listaCargos);
+
 
         void setAtivo(bool estado) { ativo = estado; }
         bool isAtivo() const { return ativo; }

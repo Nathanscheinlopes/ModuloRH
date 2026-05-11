@@ -21,6 +21,7 @@ int main() {
     Cargo cargos_aux; // objeto do tipo cargo para acessar os metodos desta classe
     BancoDados_RH arquivo; // objeto do tipo BancoDados_RH para acessar os metodos desta classe
     FolhaPagamento folha_pag; // objeto do tipo FolhaPagamento para acessar os metodos desta classe
+    Colaborador objAux;
 
     cargos_aux.extrairCargosPlanilha(listaCargos);
     arquivo.carregarPlanilha(colaboradores, listaCargos); // puxa os dados de colaboradores cadastrados anteriormente no arquivo
@@ -57,8 +58,10 @@ int main() {
         break;
 
         case 2:
-            
-        break;
+            objAux.editColaborador(colaboradores, listaCargos); // Chama o método de edição
+            arquivo.exportarPlanilha(colaboradores);
+            break;
+            break;
         
         case 3:
             

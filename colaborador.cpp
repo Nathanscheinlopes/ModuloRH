@@ -85,9 +85,94 @@ void Colaborador::addColaborador(const vector <Cargo>& listaCargos)
     cout << "Colaborador " << this->nome << " com ID " << this->id << " cadastrado com sucesso. Admissao em: " << data_admissao_aux << endl;
 }
 
-void Colaborador::editColaborador() // DESENVOLVER!!
-{ 
-    return; 
+void Colaborador::editColaborador(std::vector<Colaborador>& lista, const std::vector<Cargo>& listaCargos) {
+    int idBusca;
+    cout << "Digite o ID do colaborador que deseja editar: ";
+    cin >> idBusca;
+
+    Colaborador* colabParaEditar = nullptr;
+
+    // Localiza o colaborador na lista
+    for (auto& c : lista) {
+        if (c.getID() == idBusca) {
+            colabParaEditar = &c;
+            break;
+        }
+    }
+
+    if (colabParaEditar == nullptr) {
+        cout << "[!] Colaborador com ID " << idBusca << " nao encontrado.\n";
+        return;
+    }
+
+    // Se o colaborador estiver excluído, avisar o usuário
+    if (!colabParaEditar->isAtivo()) {
+        cout << "[!] Aviso: Este colaborador esta inativo (EXCLUIDO).\n";
+    }
+
+    int opcao = 0;
+    do {
+        cout << "\n--- EDITANDO: " << colabParaEditar->getNome() << " ---\n";
+        cout << "1. Alterar Nome\n";
+        cout << "2. Alterar Cargo\n";
+        cout << "3. Alterar Sexo\n";
+        cout << "4. Reativar/Desativar Colaborador\n";
+        cout << "0. Finalizar Edicao\n";
+        cout << "Escolha uma opcao: ";
+        cin >> opcao;
+
+        switch (opcao) {
+            case 1: {
+                string novoNome;
+                cout << "Nome atual: " << colabParaEditar->getNome() << endl;
+                cout << "Digite o novo nome: ";
+                cin >> ws;
+                getline(cin, novoNome);
+                colabParaEditar->nome = novoNome; // Certifique-se de que o atributo 'nome' permita acesso ou use um setter
+                cout << "Nome alterado com sucesso!\n";
+                break;
+            }
+            case 2: {
+                int novoCargoID;
+                cout << "Cargo atual: " << colabParaEditar->getNomeCargo() << endl;
+                cout << "Selecione o novo cargo:\n";
+                for (const auto& cargo : listaCargos) {
+                    cout << cargo.getID_Cargo() << ". " << cargo.getNome() << endl;
+                }
+                cin >> novoCargoID;
+                if (novoCargoID >= 1 && novoCargoID <= listaCargos.size()) {
+                    colabParaEditar->objetoCargo = listaCargos[novoCargoID - 1];
+                    cout << "Cargo atualizado!\n";
+                } else {
+                    cout << "ID de cargo invalido.\n";
+                }
+                break;
+            }
+            case 3: {
+                string novoSexo;
+                cout << "Digite o novo sexo (M/F): ";
+                cin >> novoSexo;
+                transform(novoSexo.begin(), novoSexo.end(), novoSexo.begin(), ::toupper);
+                if (novoSexo == "M" || novoSexo == "F") {
+                    colabParaEditar->sexo = novoSexo;
+                    cout << "Sexo atualizado!\n";
+                } else {
+                    cout << "Entrada invalida.\n";
+                }
+                break;
+            }
+            case 4: {
+                colabParaEditar->setAtivo(!colabParaEditar->isAtivo());
+                cout << "Status alterado para: " << (colabParaEditar->isAtivo() ? "ATIVO" : "INATIVO") << endl;
+                break;
+            }
+            case 0:
+                cout << "Edicao finalizada.\n";
+                break;
+            default:
+                cout << "Opcao invalida.\n";
+        }
+    } while (opcao != 0);
 }
 
 void Colaborador::atualizarContador(const vector<Colaborador>& lista) {
