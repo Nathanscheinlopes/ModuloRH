@@ -1,27 +1,26 @@
 #ifndef BANCODADOS_RH_H
 #define BANCODADOS_RH_H
 
-#include <iostream> // Para usar cout/cin
-#include <ctime>    // Para usar struct tm e time_t
-#include "colaborador.h"
+#include <iostream>
 #include <vector>
-#include <fstream> // Necessário para manipulação de arquivos
+#include <fstream>
 #include <string>
+#include "colaborador.h"
 
-using namespace std; // Se você estiver usando no .h, certifique-se de que é intencional
+using namespace std;
 
 class BancoDados_RH
 {
-    public:
-        // Salva o vetor de colaboradores no CSV, incluindo o status 'ativo' (Soft Delete)
-        void exportarPlanilha(const vector<Colaborador>& colaboradores);
+public:
+    // Exporta os dados do vetor para o arquivo CSV (incluindo status ativo/inativo)
+    void exportarPlanilha(const vector<Colaborador>& colaboradores);
 
-        // Lê o CSV e reconstrói `o vetor, filtrando ou marcando inativos conforme o campo 'Ativo'
-        void carregarPlanilha(vector<Colaborador>& colaboradores, const vector<Cargo>& listaCargos);
+    // Carrega os dados do arquivo CSV e reconstrói os objetos Colaborador
+    void carregarPlanilha(vector<Colaborador>& colaboradores, const vector<Cargo>& listaCargos);
 
-        // Métodos para SQL (Segunda Avaliação)
-        void salvarBanco(); 
-        void carregarBanco(); 
+    // Métodos reservados para implementação futura de banco de dados SQL
+    void salvarBanco(); 
+    void carregarBanco(); 
 };
 
 #endif

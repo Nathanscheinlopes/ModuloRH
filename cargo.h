@@ -9,40 +9,42 @@
 
 using namespace std;
 
-// Pré-declaração para o método de deletar não dar erro
+// Pré-declaração para evitar dependência cíclica com Colaborador
 class Colaborador; 
 
-class Cargo {
-    private:
-        int id_cargo;
-        string nome;
-        float salarioBase;
-        bool ativo; 
-        static int contador_id_cargo;
+class Cargo 
+{
+private:
+    int id_cargo;
+    string nome;
+    float salarioBase;
+    bool ativo; 
+    static int contador_id_cargo; // Controle global de IDs para novos cadastros
 
-    public:
-        Cargo();
-        Cargo(int id_cargo_arq, string nome_arq, float salario_arq, bool ativo_arq);
+public:
+    // Construtores
+    Cargo();
+    Cargo(int id_cargo_arq, string nome_arq, float salario_arq, bool ativo_arq);
 
-        void extrairCargosPlanilha(vector<Cargo>& cargos);
-        void salvarCargosPlanilha(const vector<Cargo>& cargos);
-        static void atualizarContador(const vector<Cargo>& lista);
+    // Persistência de Dados
+    void extrairCargosPlanilha(vector<Cargo>& cargos);
+    void salvarCargosPlanilha(const vector<Cargo>& cargos);
+    static void atualizarContador(const vector<Cargo>& lista);
 
-        // Getters e Setters
-        int getID_Cargo() const;
-        string getNome() const;
-        float getSalario() const;
-        bool isAtivo() const { return ativo; }
-        
-        void setNome(string n) { nome = n; }
-        void setSalario(float s) { salarioBase = s; }
-        void setAtivo(bool status) { ativo = status; }
+    // Getters e Setters
+    int getID_Cargo() const;
+    string getNome() const;
+    float getSalario() const;
+    bool isAtivo() const { return ativo; }
+    
+    void setNome(string n) { nome = n; }
+    void setSalario(float s) { salarioBase = s; }
+    void setAtivo(bool status) { ativo = status; }
 
-        // Métodos de Gerenciamento
-        static void adicionarCargo(vector<Cargo>& lista);
-        static void editarCargo(vector<Cargo>& lista);
-        // Nota: O header do Colaborador deve estar incluído no .cpp
-        static void deletarCargo(vector<Cargo>& lista, const vector<Colaborador>& colaboradores);
+    // Métodos de Gerenciamento Estáticos
+    static void adicionarCargo(vector<Cargo>& lista);
+    static void editarCargo(vector<Cargo>& lista);
+    static void deletarCargo(vector<Cargo>& lista, const vector<Colaborador>& colaboradores);
 };
 
 #endif

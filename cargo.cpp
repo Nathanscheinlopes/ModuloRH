@@ -1,65 +1,85 @@
 #include "cargo.h"
-#include "colaborador.h" // Necessário para verificar se há funcionários no cargo
+#include "colaborador.h"
 
+// Inicialização do contador estático
 int Cargo::contador_id_cargo = 0;
 
-Cargo::Cargo() {
+Cargo::Cargo() 
+{
     this->id_cargo = ++contador_id_cargo;
     this->nome = "Nao preenchido";
     this->salarioBase = 0;
     this->ativo = true;
 }
 
-Cargo::Cargo(int id_cargo_arq, string nome_arq, float salario_arq, bool ativo_arq) {
+
+Cargo::Cargo(int id_cargo_arq, string nome_arq, float salario_arq, bool ativo_arq) 
+{
     this->id_cargo = id_cargo_arq;
     this->nome = nome_arq;
     this->salarioBase = salario_arq;
     this->ativo = ativo_arq;
 }
 
-void Cargo::atualizarContador(const vector<Cargo>& lista) {
+
+void Cargo::atualizarContador(const vector<Cargo>& lista) 
+{
     int maior = 0;
-    for (const auto& c : lista) {
+    for (const auto& c : lista) 
+    {
         if (c.getID_Cargo() > maior) maior = c.getID_Cargo();
     }
     contador_id_cargo = maior;
 }
 
-void Cargo::extrairCargosPlanilha(vector<Cargo>& cargos) {
-    ifstream arquivo("TabelaCargos.csv");
-    if (arquivo.is_open()) {
-        string linha;
-        getline(arquivo, linha); // Pula cabeçalho
 
-        while (getline(arquivo, linha)) {
+void Cargo::extrairCargosPlanilha(vector<Cargo>& cargos) 
+{
+    ifstream arquivo("TabelaCargos.csv");
+    if (arquivo.is_open()) 
+    {
+        string linha;
+        getline(arquivo, linha); // Pular cabeçalho
+
+        while (getline(arquivo, linha)) 
+        {
             if (linha.empty() || linha.length() < 2) continue;
             
-            string dados[4]; // Aumentamos para 4 colunas
+            string dados[4]; 
             size_t pos = 0;
-            for (int i = 0; i < 3; i++) {
+            
+            // Split da linha por ponto e vírgula
+            for (int i = 0; i < 3; i++) 
+            {
                 pos = linha.find(";");
                 if (pos == string::npos) break;
                 dados[i] = linha.substr(0, pos);
                 linha.erase(0, pos + 1);
             }
-            dados[3] = linha; // Status Ativo (0 ou 1)
+            dados[3] = linha; 
 
-            try {
+            try 
+            {
                 int id = stoi(dados[0]);
                 float sal = stof(dados[2]);
                 bool status = (dados[3] == "1"); 
                 cargos.push_back(Cargo(id, dados[1], sal, status));
-            } catch (...) { continue; }
+            } 
+            catch (...) { continue; }
         }
         arquivo.close();
     }
 }
 
-void Cargo::salvarCargosPlanilha(const vector<Cargo>& cargos) {
+
+void Cargo::salvarCargosPlanilha(const vector<Cargo>& cargos) 
+{
     ofstream arquivo("TabelaCargos.csv");
-    if (arquivo.is_open()) {
+    if (arquivo.is_open()) 
+    {
         arquivo << "ID;Nome;SalarioBase;Ativo" << endl;
-        for (const auto& c : cargos) {
+        for (const auto& c : cargos) 
+        {
             arquivo << c.getID_Cargo() << ";" 
                     << c.getNome() << ";" 
                     << c.getSalario() << ";" 
@@ -69,7 +89,9 @@ void Cargo::salvarCargosPlanilha(const vector<Cargo>& cargos) {
     }
 }
 
-void Cargo::adicionarCargo(vector<Cargo>& lista) {
+
+void Cargo::adicionarCargo(vector<Cargo>& lista) 
+{
     string nome;
     float salario;
     cout << "\n--- Cadastro de Novo Cargo ---\n";
@@ -83,62 +105,74 @@ void Cargo::adicionarCargo(vector<Cargo>& lista) {
     novo.setNome(nome);
     novo.setSalario(salario);
     novo.setAtivo(true);
+    
     lista.push_back(novo);
-    cout << "Cargo '" << nome << "' cadastrado com ID " << novo.getID_Cargo() << "!\n";
+    cout << "[SISTEMA] Cargo '" << nome << "' cadastrado com ID " << novo.getID_Cargo() << "!\n";
 }
 
-void Cargo::editarCargo(vector<Cargo>& lista) {
+
+void Cargo::editarCargo(vector<Cargo>& lista) 
+{
     int id;
     cout << "Digite o ID do cargo para editar: ";
     cin >> id;
-    for (auto& c : lista) {
-        if (c.getID_Cargo() == id) {
+    for (auto& c : lista) 
+    {
+        if (c.getID_Cargo() == id) 
+        {
             int op;
-            cout << "Editando: " << c.getNome() << " | Salario: " << c.getSalario() << endl;
+            cout << "Editando: " << c.getNome() << " | Salario: R$ " << c.getSalario() << endl;
             cout << "1. Mudar Nome\n2. Mudar Salario\nEscolha: ";
             cin >> op;
-            if (op == 1) {
+            
+            if (op == 1) 
+            {
                 string n; cout << "Novo nome: "; cin >> ws; getline(cin, n);
                 c.setNome(n);
-            } else if (op == 2) {
+            } 
+            else if (op == 2) 
+            {
                 float s; cout << "Novo salario: "; cin >> s;
                 c.setSalario(s);
             }
-            cout << "Cargo atualizado!\n";
+            cout << "[SISTEMA] Cargo atualizado com sucesso!\n";
             return;
         }
     }
-    cout << "ID nao encontrado.\n";
+    cout << "[!] ID nao encontrado.\n";
 }
 
-void Cargo::deletarCargo(vector<Cargo>& lista, const vector<Colaborador>& colaboradores) {
+
+void Cargo::deletarCargo(vector<Cargo>& lista, const vector<Colaborador>& colaboradores) 
+{
     int id;
-    cout << "Digite o ID do cargo para alterar o status (Ativar/Desativar): ";
+    cout << "Digite o ID do cargo para Ativar/Desativar: ";
     cin >> id;
 
-    for (auto& c : lista) {
-        if (c.getID_Cargo() == id) {
-            
-            // Caso 1: O cargo está ATIVO e o usuário quer DESATIVAR
-            if (c.isAtivo()) {
-                // Verificação de segurança para colaboradores vinculados
-                for (const auto& colab : colaboradores) {
-                    if (colab.getNomeCargo() == c.getNome() && colab.isAtivo()) {
+    for (auto& c : lista) 
+    {
+        if (c.getID_Cargo() == id) 
+        {
+            if (c.isAtivo()) 
+            {
+                // Validação de vínculo antes de desativar
+                for (const auto& colab : colaboradores) 
+                {
+                    if (colab.getNomeCargo() == c.getNome() && colab.isAtivo()) 
+                    {
                         cout << "[!] Erro: Nao e possivel desativar. Existem colaboradores ativos neste cargo!\n";
                         return;
                     }
                 }
                 c.setAtivo(false);
-                cout << "Cargo '" << c.getNome() << "' foi DESATIVADO com sucesso.\n";
+                cout << "[SISTEMA] Cargo '" << c.getNome() << "' DESATIVADO.\n";
             } 
-            
-            // Caso 2: O cargo está INATIVO e o usuário quer REATIVAR
-            else {
+            else 
+            {
                 c.setAtivo(true);
-                cout << "Cargo '" << c.getNome() << "' foi REATIVADO com sucesso.\n";
+                cout << "[SISTEMA] Cargo '" << c.getNome() << "' REATIVADO.\n";
             }
-            
-            return; // Encontrou e processou, sai da função
+            return; 
         }
     }
     cout << "[!] Cargo nao encontrado.\n";

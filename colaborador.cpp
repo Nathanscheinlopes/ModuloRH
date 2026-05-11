@@ -1,267 +1,171 @@
 #include "colaborador.h"
-#include <algorithm> // Necessário para o transform
-#include <cctype>    // Necessário para o ::toupper
+#include <algorithm>
+#include <cctype>
 
-int Colaborador::contador_ID = 0; //inicializa o contador de IDs de colaboradores
+// Inicialização do contador global de colaboradores
+int Colaborador::contador_ID = 0;
 
-Colaborador::Colaborador() // metodo construtor - inicializa todos os membros da classe Colaborador
+Colaborador::Colaborador() 
 {
-    this->id = ++contador_ID; // atribui id e soma 1 ao contador (id sequencial do sistema)
+    this->id = ++contador_ID;
     this->nome = "Nao preenchido";
     this->cpf = "00000000000";
     this->sexo = "Nao preenchido";
-    this->ativo = false; // Inicialmente, o colaborador não está ativo
-    this->horasTrabalhadas = 0.0; // Inicialmente, o colaborador não trabalhou horas
-    struct tm data_admissao = {0};
-    struct tm data_desligamento = {0}; // logica da data de desligamento deve entrar no metodo deleteColaborador
+    this->ativo = false; 
+    this->horasTrabalhadas = 0.0;
+    this->data_admissao = {0};
+    this->data_desligamento = {0};
 }
 
-Colaborador::Colaborador(int id_arquivo, string nome_arq, Cargo cargo_obj,string cpf_arq, string sexo_arq, bool ativo_arq) 
+Colaborador::Colaborador(int id_arquivo, string nome_arq, Cargo cargo_obj, string cpf_arq, string sexo_arq, bool ativo_arq) 
 {
     this->id = id_arquivo;
     this->nome = nome_arq;
     this->objetoCargo = cargo_obj;
     this->cpf = cpf_arq;
     this->sexo = sexo_arq;
-    this->ativo = ativo_arq; // Atribui o estado vindo do CSV
+    this->ativo = ativo_arq;
 }
 
-string Colaborador::getNomeCargo() const
-{
-    return objetoCargo.getNome();
-}
+string Colaborador::getNomeCargo() const { return objetoCargo.getNome(); }
+float Colaborador::getSalarioBase() const { return objetoCargo.getSalario(); }
 
-float Colaborador::getSalarioBase() const
-{
-    return objetoCargo.getSalario();                
-}
 
-void Colaborador::addColaborador(const vector <Cargo>& listaCargos)
+void Colaborador::addColaborador(const vector<Cargo>& listaCargos)
 {
-    string nome_Temp, sexo_Temp, cpf_Temp; // variaveis temporarias para guardar entradas do usuario
+    string nome_Temp, sexo_Temp, cpf_Temp;
     int cargo_aux;
    
-    // Lógica para obter a data atual e salvar no membro data de admissao
-    time_t tempoBruto = time(0); // Pega o tempo agora
-    struct tm* dataAtual = localtime(&tempoBruto); // Converte para struct tm
-    this->data_admissao = *dataAtual; // atribui ao membro da classe
-    char data_admissao_aux[100]; // variavel auxiliar para salvar a data atual
-    strftime(data_admissao_aux, 100, "%d/%m/%Y", &this->data_admissao); // converter os elementos da struct tm na data formatada
+    // Captura do tempo real do sistema
+    time_t tempoBruto = time(0);
+    struct tm* dataAtual = localtime(&tempoBruto);
+    this->data_admissao = *dataAtual;
     
-    // dados de entrada do usuario salvos em variaveis temporarias
-    cout << "=====Cadastro de novo colaborador=====" << endl;
-    cout << "Digite o Nome: ";
-    getline(cin >> ws, nome_Temp); // 'ws' limpa o buffer para aceitar espaços
+    char data_formatada[11];
+    strftime(data_formatada, 11, "%d/%m/%Y", &this->data_admissao);
+    
+    cout << "\n===== CADASTRO DE COLABORADOR =====" << endl;
+    cout << "Nome Completo: ";
+    getline(cin >> ws, nome_Temp);
 
-    cout << "Digite o CPF (apenas numeros): ";
+    cout << "CPF (apenas numeros): ";
     cin >> cpf_Temp;
 
-    cout << "Digite o Sexo (M/F): ";
+    cout << "Sexo (M/F): ";
     cin >> sexo_Temp;
-    while(sexo_Temp != "m" && sexo_Temp != "M" && sexo_Temp != "f" && sexo_Temp != "F")
-    {
-        cout << "Informacao invalida! Digite M ou F novamente.\n";
+    while(sexo_Temp != "m" && sexo_Temp != "M" && sexo_Temp != "f" && sexo_Temp != "F") {
+        cout << "[!] Invalido. Digite M ou F: ";
         cin >> sexo_Temp;
     }
-    transform(sexo_Temp.begin(), sexo_Temp.end(), sexo_Temp.begin(), ::toupper); // deixando a letra maiuscula
+    transform(sexo_Temp.begin(), sexo_Temp.end(), sexo_Temp.begin(), ::toupper);
 
-    cout << "Digite o numero correspondente ao cargo: \n";
-    for (int i = 0; i < listaCargos.size(); i++) 
-    {
-        cout << listaCargos[i].getID_Cargo() << ". " << listaCargos[i].getNome() << endl; // puxa os cargos atualizados de um arquivo de cargos (associacao do vetor com o arquivo de cargos no main)
+    cout << "Selecione o Cargo:\n";
+    for (const auto& c : listaCargos) {
+        if(c.isAtivo()) // Opcional: só mostra cargos ativos para novos cadastros
+            cout << c.getID_Cargo() << ". " << c.getNome() << endl;
     }
     cin >> cargo_aux;
-    while(cargo_aux < 1 || cargo_aux > listaCargos.size()) 
-    {
-        cout << "Cargo invalido! Escolha entre 1 e " << listaCargos.size() << ": ";
-        cin >> cargo_aux;
-    }
 
     this->nome = nome_Temp;
     this->cpf = cpf_Temp;
     this->sexo = sexo_Temp;
-    this->objetoCargo = listaCargos[cargo_aux - 1]; // - 1 pois o vetor de cargos comeca a contar em zero
-    this->ativo = true; // Novo colaborador começa como ativo 
+    this->objetoCargo = listaCargos[cargo_aux - 1]; // Assume IDs sequenciais começando em 1
+    this->ativo = true; 
 
-    cout << "Colaborador " << this->nome << " com ID " << this->id << " cadastrado com sucesso. Admissao em: " << data_admissao_aux << endl;
+    cout << "[SISTEMA] " << this->nome << " cadastrado (ID: " << this->id << ") em " << data_formatada << endl;
 }
 
-void Colaborador::editColaborador(std::vector<Colaborador>& lista, const std::vector<Cargo>& listaCargos) {
+void Colaborador::editColaborador(vector<Colaborador>& lista, const vector<Cargo>& listaCargos) 
+{
     int idBusca;
-    cout << "Digite o ID do colaborador que deseja editar: ";
+    cout << "Digite o ID para editar: ";
     cin >> idBusca;
 
-    Colaborador* colabParaEditar = nullptr;
-
-    // Localiza o colaborador na lista
+    Colaborador* alvo = nullptr;
     for (auto& c : lista) {
         if (c.getID() == idBusca) {
-            colabParaEditar = &c;
+            alvo = &c;
             break;
         }
     }
 
-    if (colabParaEditar == nullptr) {
-        cout << "[!] Colaborador com ID " << idBusca << " nao encontrado.\n";
+    if (!alvo) {
+        cout << "[!] Colaborador nao encontrado.\n";
         return;
-    }
-
-    // Se o colaborador estiver excluído, avisar o usuário
-    if (!colabParaEditar->isAtivo()) {
-        cout << "[!] Aviso: Este colaborador esta inativo (EXCLUIDO).\n";
     }
 
     int opcao = 0;
     do {
-        cout << "\n--- EDITANDO: " << colabParaEditar->getNome() << " ---\n";
-        cout << "1. Alterar Nome\n";
-        cout << "2. Alterar Cargo\n";
-        cout << "3. Alterar Sexo\n";
-        cout << "4. Reativar/Desativar Colaborador\n";
-        cout << "0. Finalizar Edicao\n";
-        cout << "Escolha uma opcao: ";
+        cout << "\n--- EDITANDO: " << alvo->getNome() << " (Status: " << (alvo->isAtivo() ? "Ativo" : "Inativo") << ") ---\n";
+        cout << "1. Nome | 2. Cargo | 3. Sexo | 4. Alterar Status | 0. Sair\nEscolha: ";
         cin >> opcao;
 
-        switch (opcao) {
-            case 1: {
-                string novoNome;
-                cout << "Nome atual: " << colabParaEditar->getNome() << endl;
-                cout << "Digite o novo nome: ";
-                cin >> ws;
-                getline(cin, novoNome);
-                colabParaEditar->nome = novoNome; // Certifique-se de que o atributo 'nome' permita acesso ou use um setter
-                cout << "Nome alterado com sucesso!\n";
-                break;
-            }
-            case 2: {
-                int novoCargoID;
-                cout << "Cargo atual: " << colabParaEditar->getNomeCargo() << endl;
-                cout << "Selecione o novo cargo:\n";
-                for (const auto& cargo : listaCargos) {
-                    cout << cargo.getID_Cargo() << ". " << cargo.getNome() << endl;
-                }
-                cin >> novoCargoID;
-                if (novoCargoID >= 1 && novoCargoID <= listaCargos.size()) {
-                    colabParaEditar->objetoCargo = listaCargos[novoCargoID - 1];
-                    cout << "Cargo atualizado!\n";
-                } else {
-                    cout << "ID de cargo invalido.\n";
-                }
-                break;
-            }
-            case 3: {
-                string novoSexo;
-                cout << "Digite o novo sexo (M/F): ";
-                cin >> novoSexo;
-                transform(novoSexo.begin(), novoSexo.end(), novoSexo.begin(), ::toupper);
-                if (novoSexo == "M" || novoSexo == "F") {
-                    colabParaEditar->sexo = novoSexo;
-                    cout << "Sexo atualizado!\n";
-                } else {
-                    cout << "Entrada invalida.\n";
-                }
-                break;
-            }
-            case 4: {
-                colabParaEditar->setAtivo(!colabParaEditar->isAtivo());
-                cout << "Status alterado para: " << (colabParaEditar->isAtivo() ? "ATIVO" : "INATIVO") << endl;
-                break;
-            }
-            case 0:
-                cout << "Edicao finalizada.\n";
-                break;
-            default:
-                cout << "Opcao invalida.\n";
+        if (opcao == 1) {
+            cout << "Novo nome: "; cin >> ws; getline(cin, alvo->nome);
+        } else if (opcao == 2) {
+            int nCargo;
+            cout << "Novo Cargo (ID): "; cin >> nCargo;
+            if (nCargo >= 1 && nCargo <= listaCargos.size()) 
+                alvo->objetoCargo = listaCargos[nCargo - 1];
+        } else if (opcao == 3) {
+            cout << "Novo sexo (M/F): "; cin >> alvo->sexo;
+            transform(alvo->sexo.begin(), alvo->sexo.end(), alvo->sexo.begin(), ::toupper);
+        } else if (opcao == 4) {
+            alvo->setAtivo(!alvo->isAtivo());
+            cout << "Novo status definido.\n";
         }
     } while (opcao != 0);
 }
 
-void Colaborador::atualizarContador(const vector<Colaborador>& lista) {
+void Colaborador::atualizarContador(const vector<Colaborador>& lista) 
+{
     int maior = 0;
     for (const auto& c : lista) {
-        if (c.getID() > maior) {
-            maior = c.getID();
-        }
+        if (c.getID() > maior) maior = c.getID();
     }
-    contador_ID = maior; // O próximo ID será maior + 1
+    contador_ID = maior;
 }
 
-void Colaborador::deleteColaborador(std::vector<Colaborador>& lista, int idParaExcluir) 
+void Colaborador::deleteColaborador(vector<Colaborador>& lista, int idParaExcluir) 
 {
-    bool encontrado = false;
     for (auto& c : lista) {
         if (c.getID() == idParaExcluir && c.isAtivo()) {
-            c.setAtivo(false); // Aqui acontece o Soft Delete
-            std::cout << "Colaborador desativado com sucesso!\n";
-            encontrado = true;
-            break;
+            c.setAtivo(false);
+            cout << "[SISTEMA] Colaborador desativado.\n";
+            return;
         }
     }
-    if (!encontrado) {
-        std::cout << "ID ativo nao encontrado.\n";
-    }
+    cout << "[!] ID ativo nao encontrado.\n";
 }
 
-void Colaborador::buscarColaborador(const vector<Colaborador>& lista, string termoBusca) {
-    bool encontrado = false;
-    
-    // Normalização do termo de busca
+void Colaborador::buscarColaborador(const vector<Colaborador>& lista, string termoBusca) 
+{
     string termoUpper = termoBusca;
     transform(termoUpper.begin(), termoUpper.end(), termoUpper.begin(), ::toupper);
 
-    cout << "\n================================================ DETALHES DA BUSCA ================================================" << endl;
-    // Cabeçalho ajustado
+    cout << "\n" << string(100, '=') << "\n";
     printf("%-4s | %-10s | %-12s | %-6s | %-15s | %-20s\n", "ID", "STATUS", "CPF", "SEXO", "CARGO", "NOME");
-    cout << "-------------------------------------------------------------------------------------------------------------------" << endl;
+    cout << string(100, '-') << "\n";
 
+    bool achei = false;
     for (const auto& colab : lista) {
-        string nomeUpper = colab.getNome();
-        transform(nomeUpper.begin(), nomeUpper.end(), nomeUpper.begin(), ::toupper);
+        string nUpper = colab.getNome();
+        transform(nUpper.begin(), nUpper.end(), nUpper.begin(), ::toupper);
         
-        string idStr = to_string(colab.getID());
-
-        // Critérios de busca: ID, Nome ou CPF
-        if (idStr == termoBusca || 
-            nomeUpper.find(termoUpper) != string::npos || 
-            colab.getCPF() == termoBusca) {
-            
-            string statusTexto = colab.isAtivo() ? "ATIVO" : "EXCLUIDO";
-            
-            // Usando printf para manter as colunas alinhadas independentemente do tamanho do nome
+        if (to_string(colab.getID()) == termoBusca || nUpper.find(termoUpper) != string::npos || colab.getCPF() == termoBusca) {
             printf("%-4d | %-10s | %-12s | %-6s | %-15s | %-20s\n", 
-                   colab.getID(), 
-                   statusTexto.c_str(), 
-                   colab.getCPF().c_str(), 
-                   colab.getSexo().c_str(), 
-                   colab.getNomeCargo().c_str(), 
-                   colab.getNome().c_str());
-            
-            encontrado = true;
+                   colab.getID(), (colab.isAtivo() ? "ATIVO" : "EXCLUIDO"), 
+                   colab.getCPF().c_str(), colab.getSexo().c_str(), 
+                   colab.getNomeCargo().c_str(), colab.getNome().c_str());
+            achei = true;
         }
     }
 
-    if (!encontrado) {
-        cout << "\n[!] Nenhum colaborador encontrado para o termo: " << termoBusca << endl;
-    }
-    cout << "===================================================================================================================\n" << endl;
+    if (!achei) cout << "[!] Nenhuma correspondencia encontrada para: " << termoBusca << endl;
+    cout << string(100, '=') << "\n";
 }
 
-int Colaborador::getID() const 
-{ 
-    return id; 
-}
-
-string Colaborador::getNome() const 
-{ 
-    return nome; 
-}
-
-string Colaborador::getCPF() const 
-{ 
-    return cpf; 
-}
-
-string Colaborador::getSexo() const 
-{ 
-    return sexo; 
-}
+int Colaborador::getID() const { return id; }
+string Colaborador::getNome() const { return nome; }
+string Colaborador::getCPF() const { return cpf; }
+string Colaborador::getSexo() const { return sexo; }
