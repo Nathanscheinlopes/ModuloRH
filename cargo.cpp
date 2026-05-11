@@ -113,22 +113,35 @@ void Cargo::editarCargo(vector<Cargo>& lista) {
 
 void Cargo::deletarCargo(vector<Cargo>& lista, const vector<Colaborador>& colaboradores) {
     int id;
-    cout << "Digite o ID do cargo para desativar: ";
+    cout << "Digite o ID do cargo para alterar o status (Ativar/Desativar): ";
     cin >> id;
+
     for (auto& c : lista) {
         if (c.getID_Cargo() == id) {
-            for (const auto& colab : colaboradores) {
-                if (colab.getNomeCargo() == c.getNome() && colab.isAtivo()) {
-                    cout << "[!] Erro: Existem colaboradores ativos neste cargo!\n";
-                    return;
+            
+            // Caso 1: O cargo está ATIVO e o usuário quer DESATIVAR
+            if (c.isAtivo()) {
+                // Verificação de segurança para colaboradores vinculados
+                for (const auto& colab : colaboradores) {
+                    if (colab.getNomeCargo() == c.getNome() && colab.isAtivo()) {
+                        cout << "[!] Erro: Nao e possivel desativar. Existem colaboradores ativos neste cargo!\n";
+                        return;
+                    }
                 }
+                c.setAtivo(false);
+                cout << "Cargo '" << c.getNome() << "' foi DESATIVADO com sucesso.\n";
+            } 
+            
+            // Caso 2: O cargo está INATIVO e o usuário quer REATIVAR
+            else {
+                c.setAtivo(true);
+                cout << "Cargo '" << c.getNome() << "' foi REATIVADO com sucesso.\n";
             }
-            c.setAtivo(false);
-            cout << "Cargo '" << c.getNome() << "' desativado com sucesso.\n";
-            return;
+            
+            return; // Encontrou e processou, sai da função
         }
     }
-    cout << "Cargo nao encontrado.\n";
+    cout << "[!] Cargo nao encontrado.\n";
 }
 
 int Cargo::getID_Cargo() const { return id_cargo; }

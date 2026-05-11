@@ -27,6 +27,8 @@ int main() {
     cargos_aux.extrairCargosPlanilha(listaCargos);
     arquivo.carregarPlanilha(colaboradores, listaCargos); // puxa os dados de colaboradores cadastrados anteriormente no arquivo
     // Menu de opcoes para o usuario
+    Colaborador::atualizarContador(colaboradores);
+    Cargo::atualizarContador(listaCargos);
     do {
     
     cout << "\n";
@@ -35,8 +37,6 @@ int main() {
     cout << "1. Cadastrar colaborador" << endl << "2. Editar colaborador cadastrado" << endl << "3. Excluir colaborador" << endl << "4. Listar colaborador(es)" << endl;
     cout << "5. Buscar por colaborador(es)" << endl << "6. Gerar Folha de Pagamento" << endl << "7. Gerenciar Cargos" << endl << "8. Sair" << endl;
     cin >> menu_aux;
-    //arquivo.carregarPlanilha(colaboradores, listaCargos);
-    Colaborador::atualizarContador(colaboradores); // Ajusta o ID para não repetir
 
     switch (menu_aux)
     {
@@ -131,7 +131,7 @@ int main() {
                 cout << "1. Listar Cargos" << endl;
                 cout << "2. Adicionar Novo Cargo" << endl;
                 cout << "3. Editar Cargo" << endl;
-                cout << "4. Desativar Cargo" << endl;
+                cout << "4. Desativar/Ativar Cargo" << endl;
                 cout << "0. Voltar" << endl;
                 cout << "Escolha: ";
                 cin >> opCargo;
