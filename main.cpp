@@ -52,20 +52,7 @@ int main() {
         break;
 
         case 2:
-            cout << "\n";
-            cout << "Digite o ID do colaborador que voce deseja editar: " << endl;
-            cin >> editColaborador_aux;
-            for(int i = 0; i < colaboradores.size(); i++)
-            {
-                if(colaboradores[i].getID() == editColaborador_aux)
-                {
-                    colaboradores[i].editColaborador();
-                    arquivo.exportarPlanilha(colaboradores);
-                    break; // Encerra o loop após encontrar e editar o colaborador
-                }
-            }
-
-
+            
         break;
         
         case 3:
